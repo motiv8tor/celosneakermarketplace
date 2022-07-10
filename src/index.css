@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Notable&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Montserrat:wght@800&display=swap');
+
+
+
+
+body {
+  margin: 10px;
+  background-color: rgb(255, 255, 255);
+  
+}
+
+.card-container{
+  display: grid;
+   grid-template-columns: repeat(3, 1fr);
+}
+
+
+.form-row{
+  width: 38rem;
+  margin-left: 20px;
+  margin-right: 200px;
+}
+.form-r{ 
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-right: 20px;
+  
+}
+
+
+.balance {
+  color: black;
+  font-family: "Courgette", sans-serif;
+  font-size: x-large;
+  list-style: none;
+  text-decoration: none;
+}
+
+.brand-name {
+  color: black;
+  font-family: "Courgette", sans-serif;
+  font-size: x-large;
+ 
+}
+
+.btn{
+  margin-left: 8px;
+}
+
+.tm{
+  color: white;
+}
+
+.card{
+  width: 25rem;
+  margin: 20px;
+}
+.card-title{
+  font-family: "Montserrat", sans-serif;
+}
+
