@@ -60,12 +60,10 @@ export const Sneakers = (props) => {
                     </button>
                        )}
 
-<h5 class="card-title">Feedbacks </h5>
-
 
 { props.walletAddress === s.owner &&(
         s.feedbacks.map((f) =>(
-      <p class="card-text mt-2" key={f.index}>{f.Id}. {f.feedbackDescription}<br /> Address: {f.owner}</p>
+      <p class="card-text mt-2" key={f.index}>feedback {f.Id}. {f.feedbackDescription}<br /> Address: {f.owner}</p>
       
          ))
       )}
