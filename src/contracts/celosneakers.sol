@@ -37,6 +37,12 @@ contract CeloSneaker {
 
      mapping (uint => Sneaker) internal sneakers;
      mapping (uint => Feedback[]) internal feedbacksmapping;
+     mapping(uint => mapping(address => bool)) hasBought;
+
+     modifier onlyOwner(uint _index){
+        require(msg.sender == sneakers[_index].owner, "Only the owner can access this function");
+        _;
+     }
 
 
 // this function will implement and add a new sneaker to the sneakers mapping
@@ -48,7 +54,7 @@ contract CeloSneaker {
         uint _availableSneakers
     ) public {
         uint _sneakersReturned = 0;
-         uint _sneakersSold = 0;
+        uint _sneakersSold = 0;
         sneakers[sneakersLength] = Sneaker(
             payable(msg.sender),
             _image,
@@ -91,8 +97,7 @@ contract CeloSneaker {
     }
 
      // this function will delete a sneaker from the mapping
-        function deleteSneaker(uint _index) external {
-	        require(msg.sender == sneakers[_index].owner, "can't delete sneaker, not the owner");         
+        function deleteSneaker(uint _index) external onlyOwner(_index){       
             sneakers[_index] = sneakers[sneakersLength - 1];
             delete sneakers[sneakersLength - 1];
             sneakersLength--; 
@@ -101,17 +106,17 @@ contract CeloSneaker {
 
 // returning a sneaker
     function returnSneaker(uint _index, string memory _feedback) public{
-        require(msg.sender != sneakers[_index].owner, "Owner cannot return sneaker");
+        require(hasBought[_index][msg.sender] == true, "Only the buyers can return the sneaker");
         feedbacksmapping[_index].push(Feedback(_index, payable(address(msg.sender)), _feedback));
-     sneakers[_index].sneakersReturned++;
+        hasBought[_index][msg.sender] = false;
+        sneakers[_index].sneakersReturned++;
     }
 
 
     
 
     //pay back sneaker returnee
-    function repayBuyer(uint _index, address payable _address) public payable  {
-        require(msg.sender == sneakers[_index].owner, "Not owner");
+    function repayBuyer(uint _index, address payable _address) public payable onlyOwner(_index)  {
         require(
           IERC20Token(cUsdTokenAddress).transferFrom(
             msg.sender,
@@ -120,19 +125,27 @@ contract CeloSneaker {
           ),
           "Transfer failed."
         );
+        
     }
 
        //buying a sneaker
-    function buySneaker(uint _index) public payable  {
+    function buySneaker(uint _index, uint _quantity) public payable  {
+        require(msg.sender != sneakers[_index].owner, "Owner can't buy back the sneakers");
+        require(sneakers[_index].availableSneakers -  _quantity > 0, "Insufficient sneakers" );
         require(
           IERC20Token(cUsdTokenAddress).transferFrom(
              msg.sender,
              sneakers[_index].owner,
-             sneakers[_index].price
+             sneakers[_index].price * _quantity;
           ),
           "Transfer failed."
         );
-        sneakers[_index].sneakersSold++;
+        hasBought[_index][msg.sender] = true;
+        sneakers[_index].sneakersSold+= _quantity;
+    }
+
+    function reStock(uint _index, uint _stocks) public onlyOwner(_index){
+        sneakers[_index].availableSneakers = sneakers[_index].availableSneakers + _stocks;
     }
 
     
